@@ -5,6 +5,7 @@ import { addComment, expireDeal, getComments, getDeal, voteDeal } from "../lib/a
 import { useLocation } from "../hooks/useLocation";
 import { StatusBadge } from "../components/StatusBadge";
 import { DealCard } from "../components/DealCard";
+import { Icon } from "../components/ui/Icon";
 
 export function DealPage() {
   const { id = "" } = useParams();
@@ -80,6 +81,7 @@ export function DealPage() {
   return (
     <section className="page-section detail-page">
       <Link className="back-link" to="/feed?tab=nearby">
+        <Icon name="arrow_back" />
         Back to feed
       </Link>
 
@@ -91,36 +93,57 @@ export function DealPage() {
         <div className="detail-hero-body">
           <div className="detail-badges">
             <StatusBadge status={deal.status} />
-            <span className="detail-time">{deal.timeRemainingLabel}</span>
+            <span className="detail-time">
+              <Icon name="schedule" />
+              {deal.timeRemainingLabel}
+            </span>
           </div>
           <h1 className="detail-title">{deal.title}</h1>
-          <p className="detail-store">{deal.storeName}</p>
-          <p className="detail-address">{deal.location.address}</p>
+          <p className="detail-store detail-inline-copy">
+            <Icon name="storefront" />
+            {deal.storeName}
+          </p>
+          <p className="detail-address detail-inline-copy">
+            <Icon name="place" />
+            {deal.location.address}
+          </p>
           <p className="detail-description">{deal.description}</p>
 
           <div className="detail-metrics">
             <div>
-              <span>Discount</span>
+              <span className="metric-label">
+                <Icon name="sell" />
+                Discount
+              </span>
               <strong>{deal.discount ? `${deal.discount}% off` : "Deal posted"}</strong>
             </div>
             <div>
-              <span>Price</span>
+              <span className="metric-label">
+                <Icon name="sell" />
+                Price
+              </span>
               <strong>{deal.price ? `$${deal.price}` : "Varies"}</strong>
             </div>
             <div>
-              <span>Votes</span>
+              <span className="metric-label">
+                <Icon name="thumb_up" />
+                Votes
+              </span>
               <strong>{deal.upvotes - deal.downvotes}</strong>
             </div>
           </div>
 
           <div className="detail-actions">
             <button className={deal.userVote === 1 ? "button button-primary" : "button button-secondary"} onClick={() => void handleVote(1)} type="button">
+              <Icon name="thumb_up" />
               Upvote
             </button>
             <button className={deal.userVote === -1 ? "button button-primary" : "button button-secondary"} onClick={() => void handleVote(-1)} type="button">
+              <Icon name="thumb_down" />
               Downvote
             </button>
             <button className="button button-ghost" onClick={() => void handleExpire()} type="button">
+              <Icon name="remove_circle" />
               Mark expired
             </button>
           </div>
@@ -145,6 +168,7 @@ export function DealPage() {
               value={draftComment}
             />
             <button className="button button-primary" type="submit">
+              <Icon name="comment" />
               Add comment
             </button>
           </form>
@@ -154,7 +178,10 @@ export function DealPage() {
               <article className="comment-card" key={comment.id}>
                 <div className="comment-meta">
                   <strong>{comment.user.username}</strong>
-                  <span>{comment.user.reputationScore} rep</span>
+                  <span className="comment-rep">
+                    <Icon name="star" />
+                    {comment.user.reputationScore} rep
+                  </span>
                 </div>
                 <p>{comment.content}</p>
               </article>

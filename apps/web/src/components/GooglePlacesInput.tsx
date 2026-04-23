@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import { TextInput } from "./ui/TextInput";
 
-type PlaceSelection = {
+export type PlaceSelection = {
   address: string;
   lat: number;
   lng: number;
@@ -9,13 +10,20 @@ type PlaceSelection = {
 };
 
 export function GooglePlacesInput(props: {
-  defaultValue?: string;
   disabled?: boolean;
+  id?: string;
+  onChange?: (value: string) => void;
   onSelect: (selection: PlaceSelection) => void;
   placeholder?: string;
+  value: string;
 }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const onSelectRef = useRef(props.onSelect);
   const places = useMapsLibrary("places");
+
+  useEffect(() => {
+    onSelectRef.current = props.onSelect;
+  }, [props.onSelect]);
 
   useEffect(() => {
     if (!places || !inputRef.current) {
@@ -34,7 +42,7 @@ export function GooglePlacesInput(props: {
         return;
       }
 
-      props.onSelect({
+      onSelectRef.current({
         address: place.formatted_address,
         lat: geometry.lat(),
         lng: geometry.lng(),
@@ -45,16 +53,17 @@ export function GooglePlacesInput(props: {
     return () => {
       listener.remove();
     };
-  }, [places, props]);
+  }, [places]);
 
   return (
-    <input
+    <TextInput
       ref={inputRef}
-      className="input"
-      defaultValue={props.defaultValue}
       disabled={props.disabled}
+      id={props.id}
+      onChange={(event) => props.onChange?.(event.target.value)}
       placeholder={props.placeholder || "Search by business or address"}
       type="text"
+      value={props.value}
     />
   );
 }

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import type { DealFeedItem } from "../lib/types";
 import { DealsMap } from "../components/DealsMap";
 import { DealCard } from "../components/DealCard";
+import { Icon } from "../components/ui/Icon";
 import { ViewToggleButton } from "../components/ViewToggleButton";
 import { useLocation } from "../hooks/useLocation";
 import { listDeals } from "../lib/api";
@@ -40,7 +41,10 @@ export function MapPage() {
 
       {!location ? (
         <div className="empty-panel">
-          Set your location on the <Link to="/">home screen</Link> to unlock the nearby map.
+          <p className="empty-panel-copy">
+            <Icon name="place" />
+            Set your location on the <Link to="/">home screen</Link> to unlock the nearby map.
+          </p>
         </div>
       ) : (
         <>

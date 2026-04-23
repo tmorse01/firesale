@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { useLocation as useAppLocation } from "../hooks/useLocation";
+import { Icon } from "./ui/Icon";
 
 export function AppChrome() {
   const { error, loading, location, requestBrowserLocation, setManualLocation } = useAppLocation();
@@ -50,7 +51,10 @@ export function AppChrome() {
       <header className="app-header">
         <div className="brand-wrap">
           <Link className="brand" to="/">
-            <span className="brand-mark">FireSale</span>
+            <span className="brand-mark">
+              <Icon className="brand-icon" filled name="whatshot" />
+              FireSale
+            </span>
             <span className="brand-subtitle">Live local deals</span>
           </Link>
         </div>
@@ -63,10 +67,9 @@ export function AppChrome() {
             onClick={() => setIsAreaPickerOpen((current) => !current)}
             type="button"
           >
+            <Icon className="header-chip-icon" name="place" />
             <span className="header-chip-text">{location?.label || "Set your area"}</span>
-            <span aria-hidden="true" className="header-chip-caret">
-              v
-            </span>
+            <Icon className="header-chip-caret" name="keyboard_arrow_down" />
           </button>
 
           {isAreaPickerOpen ? (
@@ -77,6 +80,7 @@ export function AppChrome() {
               </div>
 
               <button className="button button-secondary area-picker-locate" onClick={handleUseMyLocation} type="button">
+                <Icon name="my_location" />
                 {loading && isResolvingBrowserLocation ? "Finding you..." : "Use my location"}
               </button>
 
@@ -90,6 +94,7 @@ export function AppChrome() {
 
                 <div className="area-picker-actions">
                   <button className="button button-primary" disabled={!areaQuery.trim() || loading} type="submit">
+                    <Icon filled name="place" />
                     {loading && !isResolvingBrowserLocation ? "Updating..." : "Update area"}
                   </button>
                   <button className="button button-secondary" onClick={() => setIsAreaPickerOpen(false)} type="button">
@@ -109,9 +114,30 @@ export function AppChrome() {
       </main>
 
       <nav className="bottom-nav">
-        <NavLink to="/feed?tab=nearby">Feed</NavLink>
-        <NavLink to="/map">Map</NavLink>
-        <NavLink to="/create">Post</NavLink>
+        <NavLink to="/feed?tab=nearby">
+          {({ isActive }) => (
+            <>
+              <Icon className="bottom-nav-icon" filled={isActive} name="whatshot" />
+              <span className="bottom-nav-label">Feed</span>
+            </>
+          )}
+        </NavLink>
+        <NavLink to="/map">
+          {({ isActive }) => (
+            <>
+              <Icon className="bottom-nav-icon" filled={isActive} name="map" />
+              <span className="bottom-nav-label">Map</span>
+            </>
+          )}
+        </NavLink>
+        <NavLink to="/create">
+          {({ isActive }) => (
+            <>
+              <Icon className="bottom-nav-icon" filled={isActive} name="add_circle" />
+              <span className="bottom-nav-label">Post</span>
+            </>
+          )}
+        </NavLink>
       </nav>
     </div>
   );

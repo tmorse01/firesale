@@ -3,6 +3,7 @@ import type {
   CommentsResponse,
   CreateDealInput,
   DealDetailResponse,
+  ImageUploadResponse,
   PaginatedDealsResponse
 } from "./types";
 import { apiBaseUrl } from "./config";
@@ -60,6 +61,46 @@ export function createDeal(input: CreateDealInput) {
     method: "POST",
     body: input
   });
+}
+
+function readFileAsDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== "string") {
+        reject(new Error("Could not read image."));
+        return;
+      }
+
+      resolve(reader.result);
+    };
+    reader.onerror = () => reject(new Error("Could not read image."));
+    reader.readAsDataURL(file);
+  });
+}
+
+export async function uploadDealImage(file: File) {
+  const user = getSessionUser();
+  const response = await fetch(`${apiBaseUrl}/api/uploads/images`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-firesale-user-id": user.id,
+      "x-firesale-username": user.username
+    },
+    body: JSON.stringify({
+      fileName: file.name,
+      contentType: file.type,
+      data: await readFileAsDataUrl(file)
+    })
+  });
+
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => null)) as { message?: string } | null;
+    throw new Error(payload?.message || "Image upload failed");
+  }
+
+  return (await response.json()) as ImageUploadResponse;
 }
 
 export function voteDeal(id: string, value: 1 | -1, location?: { lat?: number; lng?: number }) {

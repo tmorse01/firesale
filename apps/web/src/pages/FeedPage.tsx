@@ -4,6 +4,7 @@ import type { DealFeedItem } from "../lib/types";
 import { listDeals } from "../lib/api";
 import { useLocation } from "../hooks/useLocation";
 import { DealCard } from "../components/DealCard";
+import { Icon } from "../components/ui/Icon";
 import { ViewToggleButton } from "../components/ViewToggleButton";
 
 const allowedTabs = new Set(["nearby", "hot", "new"]);
@@ -108,6 +109,7 @@ export function FeedPage() {
 
       {nextCursor ? (
         <button className="button button-secondary center-button" onClick={() => void loadMore()} type="button">
+          <Icon name="expand_more" />
           Load more
         </button>
       ) : null}

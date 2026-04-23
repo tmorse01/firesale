@@ -1,9 +1,15 @@
+import { randomUUID } from "node:crypto";
+import { mkdirSync } from "node:fs";
+import { writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import cors from "cors";
 import express from "express";
 import {
   commentInputSchema,
   createDealInputSchema,
   dealsQuerySchema,
+  imageUploadInputSchema,
   requesterSchema,
   voteInputSchema
 } from "@firesale/shared";
@@ -11,6 +17,14 @@ import { ZodError } from "zod";
 import { createDealStore } from "./lib/store.js";
 
 const store = createDealStore();
+const uploadsDir = fileURLToPath(new URL("../uploads", import.meta.url));
+const maxImageUploadBytes = 5 * 1024 * 1024;
+const imageExtensions = {
+  "image/gif": ".gif",
+  "image/jpeg": ".jpg",
+  "image/png": ".png",
+  "image/webp": ".webp"
+} as const;
 
 function getRequester(headers: express.Request["headers"]) {
   return requesterSchema.parse({
@@ -19,14 +33,53 @@ function getRequester(headers: express.Request["headers"]) {
   });
 }
 
+function buildUploadUrl(request: express.Request, fileName: string) {
+  const host = request.get("host");
+  if (!host) {
+    throw new Error("Could not determine upload host.");
+  }
+
+  return `${request.protocol}://${host}/uploads/${fileName}`;
+}
+
 export function createApp() {
   const app = express();
+  mkdirSync(uploadsDir, { recursive: true });
 
   app.use(cors());
-  app.use(express.json({ limit: "1mb" }));
+  app.use("/uploads", express.static(uploadsDir, { maxAge: "7d" }));
+  app.use(express.json({ limit: "8mb" }));
 
   app.get("/api/health", (_request, response) => {
     response.json({ ok: true, mode: "demo-store" });
+  });
+
+  app.post("/api/uploads/images", async (request, response, next) => {
+    try {
+      const body = imageUploadInputSchema.parse(request.body);
+      const prefix = `data:${body.contentType};base64,`;
+      if (!body.data.startsWith(prefix)) {
+        response.status(400).json({ message: "Invalid image payload." });
+        return;
+      }
+
+      const buffer = Buffer.from(body.data.slice(prefix.length), "base64");
+      if (!buffer.length) {
+        response.status(400).json({ message: "Uploaded image was empty." });
+        return;
+      }
+
+      if (buffer.byteLength > maxImageUploadBytes) {
+        response.status(413).json({ message: "Images must be 5 MB or smaller." });
+        return;
+      }
+
+      const fileName = `${randomUUID()}${imageExtensions[body.contentType]}`;
+      await writeFile(join(uploadsDir, fileName), buffer);
+      response.status(201).json({ imageUrl: buildUploadUrl(request, fileName) });
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.get("/api/deals", (request, response) => {

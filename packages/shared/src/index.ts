@@ -16,10 +16,12 @@ export const dealStatusValues = [
   "lowConfidence",
   "expired"
 ] as const;
+export const imageContentTypeValues = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
 
 export type DealSort = (typeof dealSortValues)[number];
 export type DealCategory = (typeof dealCategoryValues)[number];
 export type DealStatus = (typeof dealStatusValues)[number];
+export type ImageContentType = (typeof imageContentTypeValues)[number];
 export type VoteValue = -1 | 1;
 export type UserVote = -1 | 0 | 1;
 
@@ -96,6 +98,10 @@ export type CommentsResponse = {
   >;
 };
 
+export type ImageUploadResponse = {
+  imageUrl: string;
+};
+
 export const locationSchema = z.object({
   lat: z.number().min(-90).max(90),
   lng: z.number().min(-180).max(180),
@@ -112,6 +118,12 @@ export const createDealInputSchema = z.object({
   discount: z.number().min(1).max(100).optional(),
   imageUrl: z.string().url().optional(),
   expiresAt: z.string().datetime()
+});
+
+export const imageUploadInputSchema = z.object({
+  fileName: z.string().min(1).max(140),
+  contentType: z.enum(imageContentTypeValues),
+  data: z.string().min(24)
 });
 
 export const voteInputSchema = z.object({

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import type { DealFeedItem } from "../lib/types";
 import { StatusBadge } from "./StatusBadge";
+import { Icon } from "./ui/Icon";
 
 function formatDistance(distanceMiles: number | null) {
   if (distanceMiles === null) {
@@ -23,16 +24,31 @@ export function DealCard({ deal }: { deal: DealFeedItem }) {
 
       <div className="deal-card-body">
         <div className="deal-card-topline">
-          <span>{deal.storeName}</span>
-          <span>{formatDistance(deal.distanceMiles)}</span>
+          <span className="deal-inline-meta">
+            <Icon name="storefront" />
+            {deal.storeName}
+          </span>
+          <span className="deal-inline-meta">
+            <Icon name="place" />
+            {formatDistance(deal.distanceMiles)}
+          </span>
         </div>
         <h3>{deal.title}</h3>
         <p>{deal.description}</p>
 
         <div className="deal-card-meta">
-          <strong>{deal.discount ? `${deal.discount}% off` : deal.price ? `$${deal.price}` : "Flash deal"}</strong>
-          <span>{deal.commentsCount} comments</span>
-          <span>{deal.upvotes - deal.downvotes} score</span>
+          <strong className="deal-inline-meta">
+            <Icon filled name="sell" />
+            {deal.discount ? `${deal.discount}% off` : deal.price ? `$${deal.price}` : "Flash deal"}
+          </strong>
+          <span className="deal-inline-meta">
+            <Icon name="comment" />
+            {deal.commentsCount} comments
+          </span>
+          <span className="deal-inline-meta">
+            <Icon name="thumb_up" />
+            {deal.upvotes - deal.downvotes} score
+          </span>
         </div>
       </div>
     </Link>

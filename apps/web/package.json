@@ -9,6 +9,7 @@
     "start": "node server.mjs"
   },
   "dependencies": {
+    "@base-ui/react": "^1.4.1",
     "@firesale/shared": "*",
     "@vis.gl/react-google-maps": "^1.5.4",
     "react": "^18.3.1",
