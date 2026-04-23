@@ -1,0 +1,20 @@
+{
+  "name": "firesale",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace @firesale/api",
+    "dev:web": "npm run dev --workspace @firesale/web",
+    "build:api": "npm run build --workspace @firesale/shared && npm run build --workspace @firesale/api",
+    "build:web": "npm run build --workspace @firesale/shared && npm run build --workspace @firesale/web",
+    "deploy": "node scripts/deploy.mjs",
+    "start:api": "npm run start --workspace @firesale/api",
+    "start:web": "npm run start --workspace @firesale/web",
+    "build": "node scripts/build-service.mjs",
+    "start": "node scripts/start-service.mjs"
+  }
+}

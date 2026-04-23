@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id
+  username        String    @unique
+  reputationScore Int       @default(0)
+  createdAt       DateTime  @default(now())
+  deals           Deal[]
+  votes           Vote[]
+  comments        Comment[]
+}
+
+model Deal {
+  id                String    @id
+  title             String
+  description       String
+  storeName         String
+  category          String
+  lat               Float
+  lng               Float
+  address           String
+  price             Float?
+  discount          Float?
+  imageUrl          String?
+  createdAt         DateTime  @default(now())
+  expiresAt         DateTime
+  manuallyExpiredAt DateTime?
+  createdById       String
+  createdBy         User      @relation(fields: [createdById], references: [id])
+  votes             Vote[]
+  comments          Comment[]
+
+  @@index([createdAt])
+  @@index([expiresAt])
+}
+
+model Vote {
+  id        String   @id
+  dealId    String
+  userId    String
+  value     Int
+  createdAt DateTime @default(now())
+  deal      Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([dealId, userId])
+}
+
+model Comment {
+  id        String   @id
+  dealId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  deal      Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([dealId, createdAt])
+}

@@ -1,0 +1,17 @@
+{
+  "name": "FireSale",
+  "short_name": "FireSale",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff8ef",
+  "theme_color": "#ff5b1f",
+  "description": "Live nearby deals, expiring soon.",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
