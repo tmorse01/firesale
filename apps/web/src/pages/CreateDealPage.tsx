@@ -208,7 +208,7 @@ export function CreateDealPage() {
             />
           </FormField>
 
-          <FormField hint="Use arrows, typeahead, and enter to choose fast." label="Category">
+          <FormField hint="Use arrows, typeahead, and enter to choose fast." label="Category" nativeLabel={false}>
             <Select
               onValueChange={(value) => setForm((current) => ({ ...current, category: value as DealCategory }))}
               options={categoryOptions}
@@ -299,9 +299,9 @@ export function CreateDealPage() {
 
         <FormField htmlFor={imageFieldId} hint="PNG, JPG, WebP, or GIF up to 5 MB." label="Optional image">
           <div className="image-upload-field">
-            <input
+            <TextInput
               accept={acceptedImageTypes.join(",")}
-              className="ui-input image-upload-input"
+              className="image-upload-input"
               disabled={submitting}
               id={imageFieldId}
               onChange={handleImageChange}

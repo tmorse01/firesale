@@ -6,6 +6,7 @@ import { useLocation } from "../hooks/useLocation";
 import { StatusBadge } from "../components/StatusBadge";
 import { DealCard } from "../components/DealCard";
 import { Icon } from "../components/ui/Icon";
+import { TextArea } from "../components/ui/TextArea";
 
 export function DealPage() {
   const { id = "" } = useParams();
@@ -160,8 +161,7 @@ export function DealPage() {
           </div>
 
           <form className="comment-form" onSubmit={handleCommentSubmit}>
-            <textarea
-              className="input textarea"
+            <TextArea
               onChange={(event) => setDraftComment(event.target.value)}
               placeholder='Try "still active", "stock is low", or "sold out".'
               rows={3}

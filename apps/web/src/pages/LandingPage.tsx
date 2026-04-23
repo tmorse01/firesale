@@ -1,8 +1,10 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FormField } from "../components/ui/FormField";
 import { useLocation } from "../hooks/useLocation";
 import { getSessionUser, updateSessionUsername } from "../lib/session";
 import { Icon } from "../components/ui/Icon";
+import { TextInput } from "../components/ui/TextInput";
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -34,16 +36,14 @@ export function LandingPage() {
         </p>
 
         <div className="hero-form-stack">
-          <label className="field-stack">
-            <span>Your display name</span>
-            <input
-              className="input"
+          <FormField label="Your display name">
+            <TextInput
               maxLength={40}
               onChange={(event) => setUsername(event.target.value)}
               placeholder="Guest Scout"
               value={username}
             />
-          </label>
+          </FormField>
 
           <div className="hero-actions">
             <button className="button button-primary" onClick={handleUseMyLocation} type="button">
@@ -57,8 +57,7 @@ export function LandingPage() {
           </div>
 
           <form className="manual-location-form" onSubmit={handleManualSubmit}>
-            <input
-              className="input"
+            <TextInput
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Enter a city or ZIP"
               value={query}

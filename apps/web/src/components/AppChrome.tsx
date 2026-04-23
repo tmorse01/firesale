@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { useLocation as useAppLocation } from "../hooks/useLocation";
 import { Icon } from "./ui/Icon";
+import { TextInput } from "./ui/TextInput";
 
 export function AppChrome() {
   const { error, loading, location, requestBrowserLocation, setManualLocation } = useAppLocation();
@@ -85,8 +86,7 @@ export function AppChrome() {
               </button>
 
               <form className="area-picker-form" onSubmit={(event) => void handleAreaSubmit(event)}>
-                <input
-                  className="input"
+                <TextInput
                   onChange={(event) => setAreaQuery(event.target.value)}
                   placeholder="Enter a city or ZIP"
                   value={areaQuery}
