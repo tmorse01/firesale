@@ -127,10 +127,18 @@ img {
 }
 
 .brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-weight: 700;
   font-size: 1.05rem;
   line-height: 1;
   white-space: nowrap;
+}
+
+.brand-icon {
+  color: var(--brand-deep);
+  font-size: 1.2rem;
 }
 
 .brand-subtitle {
@@ -177,9 +185,19 @@ img {
   text-overflow: ellipsis;
 }
 
+.header-chip-icon {
+  flex-shrink: 0;
+  color: var(--brand-deep);
+}
+
 .header-chip-caret {
   flex-shrink: 0;
-  font-size: 0.72rem;
+  font-size: 1rem;
+  transition: transform 140ms ease;
+}
+
+.header-chip-button.is-open .header-chip-caret {
+  transform: rotate(180deg);
 }
 
 .area-picker {
@@ -553,6 +571,10 @@ h2 {
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
 }
 
 .button {
@@ -568,6 +590,10 @@ h2 {
   transition:
     transform 140ms ease,
     opacity 140ms ease;
+}
+
+.button .icon-symbol {
+  font-size: 1.05rem;
 }
 
 .button:hover {
@@ -603,9 +629,18 @@ h2 {
 }
 
 .hero-stat-card strong {
-  display: block;
-  margin-bottom: 0.45rem;
   font-size: 1.1rem;
+}
+
+.hero-stat-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.45rem;
+}
+
+.hero-stat-title .icon-symbol {
+  color: var(--brand-deep);
 }
 
 .hero-stat-card span {
@@ -649,21 +684,7 @@ h2 {
 }
 
 .view-toggle-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1rem;
-  height: 1rem;
-}
-
-.view-toggle-icon svg {
-  width: 1rem;
-  height: 1rem;
-  stroke: currentColor;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.9;
+  font-size: 1.1rem;
 }
 
 .view-toggle-label {
@@ -749,6 +770,13 @@ h2 {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.empty-panel-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   flex-wrap: wrap;
 }
 
@@ -867,6 +895,22 @@ h2 {
   justify-content: space-between;
 }
 
+.deal-inline-meta,
+.detail-inline-copy,
+.metric-label,
+.comment-rep,
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.deal-inline-meta .icon-symbol,
+.detail-inline-copy .icon-symbol,
+.comment-rep .icon-symbol {
+  font-size: 1rem;
+}
+
 .deal-card p {
   margin: 0;
   color: var(--muted);
@@ -932,6 +976,10 @@ h2 {
 .detail-metrics span {
   font-size: 0.82rem;
   color: var(--muted);
+}
+
+.metric-label .icon-symbol {
+  font-size: 0.92rem;
 }
 
 .detail-columns {
@@ -1095,6 +1143,10 @@ h2 {
 }
 
 .bottom-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
   text-align: center;
   padding: 0.85rem 0.75rem;
   border-radius: 999px;
@@ -1104,6 +1156,15 @@ h2 {
 .bottom-nav a.active {
   background: rgba(255, 255, 255, 0.16);
   color: white;
+}
+
+.bottom-nav-icon {
+  font-size: 1.15rem;
+}
+
+.bottom-nav-label {
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
 .center-button {
