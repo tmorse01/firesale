@@ -16,14 +16,25 @@ export const dealStatusValues = [
   "lowConfidence",
   "expired"
 ] as const;
+export const adminModerationActionValues = ["hide", "unhide", "delete", "restore", "expire"] as const;
 export const imageContentTypeValues = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
 
 export type DealSort = (typeof dealSortValues)[number];
 export type DealCategory = (typeof dealCategoryValues)[number];
 export type DealStatus = (typeof dealStatusValues)[number];
+export type AdminModerationAction = (typeof adminModerationActionValues)[number];
 export type ImageContentType = (typeof imageContentTypeValues)[number];
 export type VoteValue = -1 | 1;
 export type UserVote = -1 | 0 | 1;
+export type AutomatedDealFields = {
+  isAutomated: boolean;
+  sourceKey: string;
+  sourceName: string;
+  sourceUrl: string;
+  externalId: string;
+  confidenceScore: number;
+  importedAt: string;
+};
 
 export type DealRecord = {
   id: string;
@@ -42,8 +53,10 @@ export type DealRecord = {
   createdBy: string;
   createdAt: string;
   expiresAt: string;
+  hiddenAt?: string;
   manuallyExpiredAt?: string;
-};
+  deletedAt?: string;
+} & Partial<AutomatedDealFields>;
 
 export type CommentRecord = {
   id: string;
@@ -102,6 +115,19 @@ export type ImageUploadResponse = {
   imageUrl: string;
 };
 
+export type AdminDealsResponse = {
+  items: DealFeedItem[];
+  stats: {
+    automated: number;
+    deleted: number;
+    expired: number;
+    hidden: number;
+    manual: number;
+    total: number;
+    visible: number;
+  };
+};
+
 export const locationSchema = z.object({
   lat: z.number().min(-90).max(90),
   lng: z.number().min(-180).max(180),
@@ -124,6 +150,10 @@ export const imageUploadInputSchema = z.object({
   fileName: z.string().min(1).max(140),
   contentType: z.enum(imageContentTypeValues),
   data: z.string().min(24)
+});
+
+export const adminModerationInputSchema = z.object({
+  action: z.enum(adminModerationActionValues)
 });
 
 export const voteInputSchema = z.object({

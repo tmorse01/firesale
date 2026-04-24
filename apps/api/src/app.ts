@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import cors from "cors";
 import express from "express";
 import {
+  adminModerationInputSchema,
   commentInputSchema,
   createDealInputSchema,
   dealsQuerySchema,
@@ -13,10 +14,9 @@ import {
   requesterSchema,
   voteInputSchema
 } from "@firesale/shared";
-import { ZodError } from "zod";
-import { createDealStore } from "./lib/store.js";
+import { ZodError, z } from "zod";
+import type { ApiContext } from "./lib/context.js";
 
-const store = createDealStore();
 const uploadsDir = fileURLToPath(new URL("../uploads", import.meta.url));
 const maxImageUploadBytes = 5 * 1024 * 1024;
 const imageExtensions = {
@@ -25,6 +25,10 @@ const imageExtensions = {
   "image/png": ".png",
   "image/webp": ".webp"
 } as const;
+const ingestionRequestSchema = z.object({
+  mode: z.enum(["dry-run", "publish"]).default("dry-run"),
+  minimumDeals: z.coerce.number().min(1).max(20).default(3)
+});
 
 function getRequester(headers: express.Request["headers"]) {
   return requesterSchema.parse({
@@ -42,7 +46,36 @@ function buildUploadUrl(request: express.Request, fileName: string) {
   return `${request.protocol}://${host}/uploads/${fileName}`;
 }
 
-export function createApp() {
+function authorizeInternalRequest(request: express.Request, response: express.Response) {
+  const configuredToken = process.env.FIRESALE_INTERNAL_TOKEN;
+  if (!configuredToken) {
+    return true;
+  }
+
+  if (request.header("x-firesale-internal-token") !== configuredToken) {
+    response.status(401).json({ message: "Unauthorized internal request." });
+    return false;
+  }
+
+  return true;
+}
+
+function authorizeAdminRequest(request: express.Request, response: express.Response) {
+  const configuredKey = process.env.FIRESALE_ADMIN_KEY;
+  if (!configuredKey) {
+    return true;
+  }
+
+  if (request.header("x-firesale-admin-key") !== configuredKey) {
+    response.status(401).json({ message: "Admin authorization required." });
+    return false;
+  }
+
+  return true;
+}
+
+export function createApp(context: ApiContext) {
+  const { bellinghamIngestion, store } = context;
   const app = express();
   mkdirSync(uploadsDir, { recursive: true });
 
@@ -52,6 +85,39 @@ export function createApp() {
 
   app.get("/api/health", (_request, response) => {
     response.json({ ok: true, mode: "demo-store" });
+  });
+
+  app.get("/api/internal/ingest/bellingham/sources", (request, response) => {
+    if (!authorizeInternalRequest(request, response)) {
+      return;
+    }
+
+    response.json({ items: bellinghamIngestion.listSources() });
+  });
+
+  app.get("/api/internal/ingest/bellingham/runs", (request, response) => {
+    if (!authorizeInternalRequest(request, response)) {
+      return;
+    }
+
+    response.json({ items: store.listIngestionRuns() });
+  });
+
+  app.post("/api/internal/ingest/bellingham", async (request, response, next) => {
+    if (!authorizeInternalRequest(request, response)) {
+      return;
+    }
+
+    try {
+      const body = ingestionRequestSchema.parse(request.body ?? {});
+      const result = await bellinghamIngestion.run({
+        mode: body.mode,
+        minimumDeals: body.minimumDeals
+      });
+      response.json(result);
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.post("/api/uploads/images", async (request, response, next) => {
@@ -139,6 +205,39 @@ export function createApp() {
   app.post("/api/deals/:id/expire", (request, response) => {
     getRequester(request.headers);
     const deal = store.expireDeal(request.params.id);
+    if (!deal) {
+      response.status(404).json({ message: "Deal not found." });
+      return;
+    }
+
+    response.json({ deal });
+  });
+
+  app.get("/api/admin/deals", (request, response) => {
+    if (!authorizeAdminRequest(request, response)) {
+      return;
+    }
+
+    const lat = request.query.lat ? Number(request.query.lat) : undefined;
+    const lng = request.query.lng ? Number(request.query.lng) : undefined;
+
+    response.json(
+      store.listAdminDeals({
+        lat,
+        lng,
+        userId: request.header("x-firesale-user-id") ?? undefined
+      })
+    );
+  });
+
+  app.post("/api/admin/deals/:id/moderate", (request, response) => {
+    if (!authorizeAdminRequest(request, response)) {
+      return;
+    }
+
+    const body = adminModerationInputSchema.parse(request.body);
+    const deal = store.moderateDeal(request.params.id, body.action);
+
     if (!deal) {
       response.status(404).json({ message: "Deal not found." });
       return;

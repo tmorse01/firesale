@@ -14,9 +14,11 @@ export function LandingPage() {
 
   async function handleManualSubmit(event: FormEvent) {
     event.preventDefault();
-    await setManualLocation(query);
+    const updated = await setManualLocation(query);
     updateSessionUsername(username);
-    navigate("/feed?tab=nearby");
+    if (updated) {
+      navigate("/feed?tab=nearby");
+    }
   }
 
   async function handleUseMyLocation() {

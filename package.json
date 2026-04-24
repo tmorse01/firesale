@@ -12,6 +12,7 @@
     "dev:web": "npm run dev --workspace @firesale/web",
     "build:api": "npm run build --workspace @firesale/shared && npm run build --workspace @firesale/api",
     "build:web": "npm run build --workspace @firesale/shared && npm run build --workspace @firesale/web",
+    "ingest:bellingham": "node scripts/ingest-bellingham.mjs",
     "deploy": "node scripts/deploy.mjs",
     "start:api": "npm run start --workspace @firesale/api",
     "start:web": "npm run start --workspace @firesale/web",

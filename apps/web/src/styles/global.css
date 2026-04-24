@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500..700,0..1,0&icon_names=add_circle,arrow_back,block,check_circle,comment,error,expand_more,home,keyboard_arrow_down,map,my_location,place,remove_circle,schedule,sell,star,storefront,thumb_down,thumb_up,verified,whatshot&display=block");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500..700,0..1,0&icon_names=add_circle,admin_panel_settings,arrow_back,block,check_circle,comment,delete,error,expand_more,home,keyboard_arrow_down,map,my_location,place,remove_circle,restart_alt,schedule,sell,star,storefront,thumb_down,thumb_up,verified,visibility,visibility_off,whatshot&display=block");
 
 :root {
   color-scheme: light;
@@ -131,16 +131,16 @@ img {
 .brand-mark {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.55rem;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   line-height: 1;
   white-space: nowrap;
 }
 
 .brand-icon {
   color: var(--brand-deep);
-  font-size: 1.2rem;
+  font-size: 1.7rem;
 }
 
 .brand-subtitle {
@@ -170,11 +170,28 @@ img {
   flex-shrink: 0;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
 .header-chip-button {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
   cursor: pointer;
+}
+
+.header-link-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.header-link-chip.is-active {
+  border-color: rgba(240, 90, 40, 0.35);
+  color: var(--text);
 }
 
 .header-chip-button.is-open {
@@ -811,6 +828,8 @@ h2 {
 
 .deal-card {
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
   overflow: hidden;
   border-radius: 1.7rem;
   color: inherit;
@@ -818,7 +837,9 @@ h2 {
 
 .deal-card-media {
   position: relative;
-  aspect-ratio: 1.4 / 1;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  min-height: 220px;
   background: linear-gradient(
     135deg,
     rgba(240, 90, 40, 0.18),
@@ -826,10 +847,21 @@ h2 {
   );
 }
 
-.deal-card-media img,
-.detail-hero-media img {
+.deal-card-image,
+.detail-hero-image {
+  width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+}
+
+.deal-card-image {
+  transform: scale(1.01);
+  transition: transform 180ms ease;
+}
+
+.deal-card:hover .deal-card-image {
+  transform: scale(1.04);
 }
 
 .deal-image-fallback {
@@ -894,7 +926,8 @@ h2 {
 
 .deal-card-body {
   display: grid;
-  gap: 0.8rem;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 0.85rem;
   padding: 1rem;
 }
 
@@ -932,6 +965,32 @@ h2 {
   line-height: 1.6;
 }
 
+.deal-card h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.deal-card-description {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+}
+
+.deal-card-show-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--brand-deep);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.deal-card-show-more .icon-symbol {
+  font-size: 0.95rem;
+}
+
 .deal-card-meta {
   justify-content: space-between;
   align-items: center;
@@ -955,6 +1014,7 @@ h2 {
 
 .detail-hero-media {
   min-height: 300px;
+  overflow: hidden;
   background: rgba(240, 90, 40, 0.12);
 }
 
@@ -1019,6 +1079,214 @@ h2 {
 .comment-form {
   display: grid;
   gap: 0.75rem;
+}
+
+.admin-hero,
+.admin-auth-card,
+.admin-toolbar,
+.admin-stat-card,
+.admin-post-card,
+.admin-empty-state {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.admin-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-hero,
+.admin-auth-card,
+.admin-toolbar,
+.admin-post-card,
+.admin-empty-state {
+  border-radius: 1.7rem;
+  padding: 1.25rem;
+}
+
+.admin-hero {
+  padding: 1.35rem;
+  border-radius: 2rem;
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.92), rgba(255, 241, 223, 0.9)),
+    radial-gradient(circle at top right, rgba(240, 90, 40, 0.12), transparent 34%);
+}
+
+.admin-hero .section-headline {
+  margin-bottom: 0;
+}
+
+.admin-auth-card,
+.admin-toolbar {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-toolbar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 248, 239, 0.88)),
+    rgba(255, 255, 255, 0.84);
+}
+
+.admin-toolbar-top,
+.admin-toolbar-actions,
+.admin-post-header,
+.admin-post-meta,
+.admin-post-actions,
+.admin-key-row,
+.admin-note-row {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-toolbar-top,
+.admin-post-header {
+  justify-content: space-between;
+}
+
+.admin-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.85rem;
+}
+
+.admin-stat-card {
+  border-radius: 1.35rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 14px 28px rgba(77, 36, 19, 0.08);
+}
+
+.admin-stat-card span,
+.admin-post-copy p,
+.admin-muted,
+.admin-note-row {
+  color: var(--muted);
+}
+
+.admin-stat-card strong {
+  display: block;
+  font-size: 1.5rem;
+  margin-top: 0.25rem;
+}
+
+.admin-post-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.admin-post-card {
+  padding: 0.85rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 249, 241, 0.92)),
+    rgba(255, 255, 255, 0.9);
+}
+
+.admin-post-layout {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.admin-post-media {
+  overflow: hidden;
+  border-radius: 1rem;
+  aspect-ratio: 1 / 1;
+  background: rgba(240, 90, 40, 0.12);
+}
+
+.admin-post-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-post-body {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.admin-post-copy {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.admin-post-copy h2 {
+  font-size: 1.05rem;
+  line-height: 1.05;
+}
+
+.admin-post-copy p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.admin-post-copy p,
+.admin-note-row {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.admin-post-meta {
+  row-gap: 0.55rem;
+}
+
+.admin-post-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--line);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.admin-post-pill.is-hidden {
+  color: #8b5a12;
+}
+
+.admin-post-pill.is-deleted {
+  color: var(--danger);
+}
+
+.admin-post-pill.is-automated {
+  color: #145c47;
+}
+
+.button-danger {
+  color: white;
+  background: linear-gradient(135deg, #d64a3b, #a8291d);
+}
+
+.button-warning {
+  color: #6d4700;
+  background: rgba(255, 195, 79, 0.22);
+  border: 1px solid rgba(155, 108, 0, 0.14);
+}
+
+.admin-action-button {
+  padding: 0.62rem 0.85rem;
+  font-size: 0.84rem;
+}
+
+.admin-post-actions {
+  gap: 0.55rem;
+}
+
+.admin-note-row {
+  font-size: 0.82rem;
 }
 
 .comment-list {
@@ -1208,7 +1476,12 @@ h2 {
   }
 
   .brand-mark {
-    font-size: 1rem;
+    gap: 0.5rem;
+    font-size: 1.02rem;
+  }
+
+  .brand-icon {
+    font-size: 1.52rem;
   }
 
   .brand-subtitle {
@@ -1219,6 +1492,14 @@ h2 {
     max-width: 45vw;
     padding: 0.55rem 0.75rem;
     font-size: 0.78rem;
+  }
+
+  .header-actions {
+    gap: 0.45rem;
+  }
+
+  .header-link-chip .header-chip-text {
+    display: none;
   }
 
   .area-picker {
@@ -1262,6 +1543,7 @@ h2 {
   }
 
   .section-action {
+    align-self: start;
     justify-self: end;
   }
 
@@ -1286,6 +1568,23 @@ h2 {
 
   .detail-metrics {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-post-layout {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .admin-post-header {
+    gap: 0.65rem;
+  }
+
+  .admin-post-copy h2 {
+    font-size: 0.98rem;
+  }
+
+  .admin-action-button {
+    padding: 0.58rem 0.75rem;
   }
 
   .map-shell {

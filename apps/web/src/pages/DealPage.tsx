@@ -88,7 +88,11 @@ export function DealPage() {
 
       <article className="detail-hero">
         <div className="detail-hero-media">
-          {deal.imageUrl ? <img alt={deal.title} src={deal.imageUrl} /> : <div className="deal-image-fallback" />}
+          {deal.imageUrl ? (
+            <img alt={deal.title} className="detail-hero-image" decoding="async" src={deal.imageUrl} />
+          ) : (
+            <div className="deal-image-fallback" />
+          )}
         </div>
 
         <div className="detail-hero-body">

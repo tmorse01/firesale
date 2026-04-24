@@ -21,7 +21,7 @@ export function DealsMap(props: {
 
   return (
     <Map
-      defaultCenter={props.location}
+      center={props.location}
       defaultZoom={11}
       gestureHandling="greedy"
       mapId={googleMapId || undefined}

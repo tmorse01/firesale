@@ -1,4 +1,6 @@
 import type {
+  AdminDealsResponse,
+  AdminModerationAction,
   CommentRecord,
   CommentsResponse,
   CreateDealInput,
@@ -7,7 +9,7 @@ import type {
   PaginatedDealsResponse
 } from "./types";
 import { apiBaseUrl } from "./config";
-import { getSessionUser } from "./session";
+import { getAdminKey, getSessionUser } from "./session";
 
 type RequestOptions = Omit<RequestInit, "body"> & {
   body?: unknown;
@@ -15,12 +17,14 @@ type RequestOptions = Omit<RequestInit, "body"> & {
 
 async function request<T>(path: string, options: RequestOptions = {}) {
   const user = getSessionUser();
+  const adminKey = getAdminKey();
   const response = await fetch(`${apiBaseUrl}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
       "x-firesale-user-id": user.id,
       "x-firesale-username": user.username,
+      ...(adminKey ? { "x-firesale-admin-key": adminKey } : {}),
       ...options.headers
     },
     body: options.body ? JSON.stringify(options.body) : undefined
@@ -124,5 +128,16 @@ export function addComment(id: string, content: string) {
   return request<{ comment: CommentRecord }>(`/api/deals/${id}/comments`, {
     method: "POST",
     body: { content }
+  });
+}
+
+export function listAdminDeals() {
+  return request<AdminDealsResponse>("/api/admin/deals");
+}
+
+export function moderateDeal(id: string, action: AdminModerationAction) {
+  return request<{ deal: DealDetailResponse["deal"] }>(`/api/admin/deals/${id}/moderate`, {
+    method: "POST",
+    body: { action }
   });
 }

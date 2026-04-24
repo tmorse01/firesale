@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { useLocation as useAppLocation } from "../hooks/useLocation";
+import { BrandIcon } from "./BrandIcon";
 import { Icon } from "./ui/Icon";
 import { TextInput } from "./ui/TextInput";
 
@@ -38,8 +39,10 @@ export function AppChrome() {
       return;
     }
 
-    await setManualLocation(trimmed);
-    setIsAreaPickerOpen(false);
+    const updated = await setManualLocation(trimmed);
+    if (updated) {
+      setIsAreaPickerOpen(false);
+    }
   }
 
   function handleUseMyLocation() {
@@ -53,59 +56,66 @@ export function AppChrome() {
         <div className="brand-wrap">
           <Link className="brand" to="/">
             <span className="brand-mark">
-              <Icon className="brand-icon" filled name="whatshot" />
+              <BrandIcon className="brand-icon" />
               FireSale
             </span>
             <span className="brand-subtitle">Live local deals</span>
           </Link>
         </div>
 
-        <div className="header-chip-wrap">
-          <button
-            aria-expanded={isAreaPickerOpen}
-            aria-haspopup="dialog"
-            className={isAreaPickerOpen ? "header-chip header-chip-button is-open" : "header-chip header-chip-button"}
-            onClick={() => setIsAreaPickerOpen((current) => !current)}
-            type="button"
-          >
-            <Icon className="header-chip-icon" name="place" />
-            <span className="header-chip-text">{location?.label || "Set your area"}</span>
-            <Icon className="header-chip-caret" name="keyboard_arrow_down" />
-          </button>
+        <div className="header-actions">
+          <NavLink className={({ isActive }) => (isActive ? "header-chip header-link-chip is-active" : "header-chip header-link-chip")} to="/admin/posts">
+            <Icon className="header-chip-icon" name="admin_panel_settings" />
+            <span className="header-chip-text">Admin</span>
+          </NavLink>
 
-          {isAreaPickerOpen ? (
-            <div aria-label="Switch area" className="area-picker" role="dialog">
-              <div className="area-picker-copy">
-                <p className="eyebrow">Switch area</p>
-                <p className="area-picker-title">Update where nearby deals are centered.</p>
-              </div>
+          <div className="header-chip-wrap">
+            <button
+              aria-expanded={isAreaPickerOpen}
+              aria-haspopup="dialog"
+              className={isAreaPickerOpen ? "header-chip header-chip-button is-open" : "header-chip header-chip-button"}
+              onClick={() => setIsAreaPickerOpen((current) => !current)}
+              type="button"
+            >
+              <Icon className="header-chip-icon" name="place" />
+              <span className="header-chip-text">{location?.label || "Set your area"}</span>
+              <Icon className="header-chip-caret" name="keyboard_arrow_down" />
+            </button>
 
-              <button className="button button-secondary area-picker-locate" onClick={handleUseMyLocation} type="button">
-                <Icon name="my_location" />
-                {loading && isResolvingBrowserLocation ? "Finding you..." : "Use my location"}
-              </button>
-
-              <form className="area-picker-form" onSubmit={(event) => void handleAreaSubmit(event)}>
-                <TextInput
-                  onChange={(event) => setAreaQuery(event.target.value)}
-                  placeholder="Enter a city or ZIP"
-                  value={areaQuery}
-                />
-
-                <div className="area-picker-actions">
-                  <button className="button button-primary" disabled={!areaQuery.trim() || loading} type="submit">
-                    <Icon filled name="place" />
-                    {loading && !isResolvingBrowserLocation ? "Updating..." : "Update area"}
-                  </button>
-                  <button className="button button-secondary" onClick={() => setIsAreaPickerOpen(false)} type="button">
-                    Cancel
-                  </button>
+            {isAreaPickerOpen ? (
+              <div aria-label="Switch area" className="area-picker" role="dialog">
+                <div className="area-picker-copy">
+                  <p className="eyebrow">Switch area</p>
+                  <p className="area-picker-title">Update where nearby deals are centered.</p>
                 </div>
-              </form>
 
-              {error ? <div className="inline-error area-picker-error">{error}</div> : null}
-            </div>
-          ) : null}
+                <button className="button button-secondary area-picker-locate" onClick={handleUseMyLocation} type="button">
+                  <Icon name="my_location" />
+                  {loading && isResolvingBrowserLocation ? "Finding you..." : "Use my location"}
+                </button>
+
+                <form className="area-picker-form" onSubmit={(event) => void handleAreaSubmit(event)}>
+                  <TextInput
+                    onChange={(event) => setAreaQuery(event.target.value)}
+                    placeholder="Enter a city or ZIP"
+                    value={areaQuery}
+                  />
+
+                  <div className="area-picker-actions">
+                    <button className="button button-primary" disabled={!areaQuery.trim() || loading} type="submit">
+                      <Icon filled name="place" />
+                      {loading && !isResolvingBrowserLocation ? "Updating..." : "Update area"}
+                    </button>
+                    <button className="button button-secondary" onClick={() => setIsAreaPickerOpen(false)} type="button">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+
+                {error ? <div className="inline-error area-picker-error">{error}</div> : null}
+              </div>
+            ) : null}
+          </div>
         </div>
       </header>
 

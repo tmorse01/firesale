@@ -32,6 +32,13 @@ model Deal {
   createdAt         DateTime  @default(now())
   expiresAt         DateTime
   manuallyExpiredAt DateTime?
+  isAutomated       Boolean   @default(false)
+  sourceKey         String?
+  sourceName        String?
+  sourceUrl         String?
+  externalId        String?
+  confidenceScore   Float?
+  importedAt        DateTime?
   createdById       String
   createdBy         User      @relation(fields: [createdById], references: [id])
   votes             Vote[]
@@ -39,6 +46,8 @@ model Deal {
 
   @@index([createdAt])
   @@index([expiresAt])
+  @@index([isAutomated, importedAt])
+  @@unique([sourceKey, externalId])
 }
 
 model Vote {

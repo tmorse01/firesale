@@ -13,14 +13,8 @@ type LocationContextValue = {
   loading: boolean;
   location: AppLocation | null;
   requestBrowserLocation: () => void;
-  setManualLocation: (query: string) => Promise<void>;
+  setManualLocation: (query: string) => Promise<boolean>;
   setLocation: (location: AppLocation) => void;
-};
-
-const losAngelesFallback: AppLocation = {
-  label: "Los Angeles, CA",
-  lat: 34.0522,
-  lng: -118.2437
 };
 
 const LocationContext = createContext<LocationContextValue | undefined>(undefined);
@@ -54,16 +48,16 @@ export function LocationProvider({ children }: { children: ReactNode }) {
   const setManualLocation = async (query: string) => {
     const trimmed = query.trim();
     if (!trimmed) {
-      return;
+      return false;
     }
 
     setLoading(true);
     setError(null);
 
     if (!googleMapsApiKey) {
-      setLocation({ ...losAngelesFallback, label: trimmed });
+      setError("Area search is unavailable right now. Use your current location instead.");
       setLoading(false);
-      return;
+      return false;
     }
 
     try {
@@ -85,9 +79,10 @@ export function LocationProvider({ children }: { children: ReactNode }) {
         lat: result.geometry.location.lat,
         lng: result.geometry.location.lng
       });
+      return true;
     } catch {
-      setError("We couldn't geocode that location. Using Los Angeles demo coverage for now.");
-      setLocation({ ...losAngelesFallback, label: trimmed });
+      setError("We couldn't find that area. Try a nearby city or use your current location.");
+      return false;
     } finally {
       setLoading(false);
     }
