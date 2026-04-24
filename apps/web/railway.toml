@@ -1,0 +1,18 @@
+[build]
+builder = "RAILPACK"
+buildCommand = "FIRESALE_SERVICE_TARGET=web npm run build"
+watchPatterns = [
+  "/apps/web/**",
+  "/packages/shared/**",
+  "/scripts/build-service.mjs",
+  "/scripts/start-service.mjs",
+  "/package.json",
+  "/package-lock.json",
+  "/tsconfig.base.json"
+]
+
+[deploy]
+startCommand = "FIRESALE_SERVICE_TARGET=web npm start"
+healthcheckPath = "/"
+healthcheckTimeout = 120
+restartPolicyType = "ON_FAILURE"

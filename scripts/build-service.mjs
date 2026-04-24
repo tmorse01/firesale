@@ -9,7 +9,8 @@ const commandSets = {
     ["run", "build:web"]
   ],
   api: [["run", "build:api"]],
-  web: [["run", "build:web"]]
+  web: [["run", "build:web"]],
+  "cron-bellingham": []
 };
 
 const commands = commandSets[target];

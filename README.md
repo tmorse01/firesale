@@ -61,6 +61,8 @@ Enable these APIs in Google Cloud:
 
 ## Notes
 
-- The API currently runs in a seeded demo mode so the full product loop works immediately.
+- The API now persists local runtime state in `apps/api/runtime/store.json` for development and simple deployments.
 - The Prisma schema is included for the production PostgreSQL data model, but there is not yet a live Prisma adapter wired into the API runtime.
 - Nearby ranking uses feed distance when location is available. Hot ranking uses the score formula from the spec.
+- Railway GitHub autodeploy setup is documented in [docs/railway-autodeploy.md](./docs/railway-autodeploy.md).
+- Railway cron setup for the Bellingham auto-ingest is documented in [docs/railway-bellingham-cron.md](./docs/railway-bellingham-cron.md).

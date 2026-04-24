@@ -5,13 +5,14 @@ const target = process.env.FIRESALE_SERVICE_TARGET;
 
 const commandByTarget = {
   api: ["run", "start:api"],
-  web: ["run", "start:web"]
+  web: ["run", "start:web"],
+  "cron-bellingham": ["run", "cron:bellingham"]
 };
 
 const args = target ? commandByTarget[target] : undefined;
 
 if (!args) {
-  console.error("Set FIRESALE_SERVICE_TARGET to 'api' or 'web' before running npm start.");
+  console.error("Set FIRESALE_SERVICE_TARGET to 'api', 'web', or 'cron-bellingham' before running npm start.");
   process.exit(1);
 }
 
